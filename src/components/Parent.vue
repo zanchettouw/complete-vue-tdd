@@ -2,10 +2,11 @@
   <div>
     <span
       class="title"
+      v-show="showSpan"
     >
       Parent Component
     </span>
-    <Child/>
+    <Child v-if="showChild" />
   </div>
 </template>
 

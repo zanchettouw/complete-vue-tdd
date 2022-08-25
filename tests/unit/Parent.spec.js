@@ -1,18 +1,47 @@
-import { mount, shallowMount } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
+import '@testing-library/jest-dom'
 import Parent from '@/components/Parent.vue'
+import ParentWithManyChildren from '@/components/ParentWithManyChildren.vue'
 import Child from '@/components/Child.vue'
 
 describe('Parent', () => {
-  it('check diffence between mount and shallowMount', () => {
-    const shallowWrapper = shallowMount(Parent)
-    const mountWrapper = mount(Parent)
+  it('does not render a span', () => {
+    const wrapper = mount(Parent)
 
-    const shallowChildWrapper = shallowMount(Child)
-    const mountChildWrapper = mount(Child)
+    expect(wrapper.find('span').isVisible()).toBe(false)
+  })
 
-    console.log('parent shallow', shallowWrapper.html())
-    console.log('parent mount', mountWrapper.html())
-    console.log('child shallow', shallowChildWrapper.html())
-    console.log('child mount', mountChildWrapper.html())
+  it('does render a span', () => {
+    const wrapper = mount(Parent, {
+      data() {
+        return { showSpan: true }
+      }
+    })
+
+    expect(wrapper.find('span').isVisible()).toBe(true)
+  })
+
+  it('does not render a child component', () => {
+    const wrapper = mount(Parent)
+
+    expect(wrapper.findComponent('Child').exists()).toBe(false)
+  })
+
+  it('rendes a Child component', () => {
+    const wrapper = mount(Parent, {
+      data() {
+        return { showChild: true }
+      }
+    })
+
+    expect(wrapper.findComponent({ name: 'Child' }).exists()).toBe(true)
+  })
+})
+
+describe('ParentWithManyChildren', () => {
+  it('renders many childre', () => {
+    const wrapper = mount(ParentWithManyChildren)
+
+    expect(wrapper.findAllComponents(Child).length).toBe(3)
   })
 })
